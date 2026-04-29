@@ -1,21 +1,28 @@
+import sys
+sys.path.append(r"D:\changelog\changelog-gen")
 from dotenv import load_dotenv
-from github import Github
 from datetime import datetime, timezone
+from core.github_fetcher import fetch_commits
+from core.changelog_generator import generate_changelog
 import os
 
-load_dotenv()
+load_dotenv(dotenv_path=r"D:\changelog\changelog-gen\.env")
 
-# --- TEST: Connect to GitHub and fetch commits ---
-g = Github(os.getenv("GITHUB_TOKEN"))
-repo = g.get_repo("tiangolo/fastapi")
-print(f"✅ GitHub connected! Repo: {repo.full_name}")
-
-commits = repo.get_commits(
+print("Fetching commits...")
+commits = fetch_commits(
+    "https://github.com/tiangolo/fastapi",
     since=datetime(2024, 10, 1, tzinfo=timezone.utc),
     until=datetime(2024, 10, 15, tzinfo=timezone.utc)
 )
+print(f"✅ Fetched {len(commits)} commits")
 
-commit_list = list(commits[:5])
-print(f"✅ Fetched {len(commit_list)} commits")
-for c in commit_list:
-    print(f"  → {c.sha[:7]} {c.commit.message[:60]}")
+print("\nGenerating changelog...")
+result = generate_changelog(commits, "FastAPI")
+
+print(f"✅ Done!\n")
+print(f"Summary: {result['summary']}\n")
+for category, items in result['categories'].items():
+    if items:
+        print(f"{category}:")
+        for item in items:
+            print(f"  → {item}")
