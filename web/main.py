@@ -9,10 +9,9 @@ from fastapi import FastAPI, Request, Form
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from datetime import datetime, timezone
-from dotenv import load_dotenv
 import uuid
 
-load_dotenv()
+
 from core.github_fetcher import fetch_commits
 from core.changelog_generator import generate_changelog
 from web.database import save_changelog, get_changelog
@@ -20,10 +19,9 @@ from web.database import save_changelog, get_changelog
 app = FastAPI()
 @app.get("/debug")
 async def debug():
-    import os
     return {
-        "GROQ_API_KEY": os.getenv("GROQ_API_KEY", "NOT FOUND"),
-        "GITHUB_TOKEN": os.getenv("GITHUB_TOKEN", "NOT FOUND")
+        "GROQ_API_KEY": os.environ.get("GROQ_API_KEY", "NOT FOUND"),
+        "GITHUB_TOKEN": os.environ.get("GITHUB_TOKEN", "NOT FOUND")
     }
 templates = Jinja2Templates(directory=str(BASE_DIR / "web" / "templates"))
 

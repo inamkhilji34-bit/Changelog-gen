@@ -3,7 +3,7 @@ from datetime import datetime
 import os
 
 def fetch_commits(repo_url: str, since: datetime, until: datetime) -> list[dict]:
-    g = Github(os.getenv("GITHUB_TOKEN"))
+    g = Github(os.environ.get("GITHUB_TOKEN"))
     
     parts = repo_url.rstrip("/").split("/")
     owner, repo_name = parts[-2], parts[-1]
