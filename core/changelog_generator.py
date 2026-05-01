@@ -1,7 +1,8 @@
+from dotenv import load_dotenv
 from groq import Groq
 import json
 import os
-
+load_dotenv()
 def generate_changelog(commits: list[dict], repo_name: str) -> dict:
     client = Groq(api_key=os.getenv("GROQ_API_KEY"))
     

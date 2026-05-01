@@ -12,8 +12,7 @@ from datetime import datetime, timezone
 from dotenv import load_dotenv
 import uuid
 
-load_dotenv(dotenv_path=BASE_DIR / ".env")
-
+load_dotenv()
 from core.github_fetcher import fetch_commits
 from core.changelog_generator import generate_changelog
 from web.database import save_changelog, get_changelog
