@@ -1,0 +1,63 @@
+import sys
+sys.path.append(r"D:\changelog\changelog-gen")
+
+from fastapi import FastAPI, Request, Form
+from fastapi.responses import HTMLResponse, RedirectResponse
+from fastapi.templating import Jinja2Templates
+from datetime import datetime, timezone
+from dotenv import load_dotenv
+import uuid
+import os
+
+load_dotenv(dotenv_path=r"D:\changelog\changelog-gen\.env")
+
+from core.github_fetcher import fetch_commits
+from core.changelog_generator import generate_changelog
+from web.database import save_changelog, get_changelog
+
+app = FastAPI()
+templates = Jinja2Templates(directory=r"D:\changelog\changelog-gen\web\templates")
+
+@app.get("/", response_class=HTMLResponse)
+async def index(request: Request):
+    return templates.TemplateResponse(request=request, name="index.html", context={"error": None})
+
+@app.post("/generate")
+async def generate(
+    request: Request,
+    repo_url: str = Form(...),
+    since_date: str = Form(...),
+    until_date: str = Form(...)
+):
+    try:
+        since = datetime.fromisoformat(since_date).replace(tzinfo=timezone.utc)
+        until = datetime.fromisoformat(until_date).replace(tzinfo=timezone.utc)
+
+        commits = fetch_commits(repo_url, since, until)
+
+        if not commits:
+            return templates.TemplateResponse(request=request, name="index.html", context={
+                "error": "No commits found in that date range."
+            })
+
+        repo_name = repo_url.rstrip("/").split("/")[-1]
+        result = generate_changelog(commits, repo_name)
+
+        slug = str(uuid.uuid4())[:8]
+        save_changelog(slug, repo_url, repo_name, result)
+
+        return RedirectResponse(f"/c/{slug}", status_code=303)
+
+    except Exception as e:
+        return templates.TemplateResponse(request=request, name="index.html", context={
+            "error": f"Something went wrong: {str(e)}"
+        })
+
+@app.get("/c/{slug}", response_class=HTMLResponse)
+async def view_changelog(request: Request, slug: str):
+    data = get_changelog(slug)
+    if not data:
+        return templates.TemplateResponse(request=request, name="index.html", context={
+            "error": "Changelog not found."
+        })
+    return templates.TemplateResponse(request=request, name="changelog.html", context=data)
