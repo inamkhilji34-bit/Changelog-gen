@@ -1,5 +1,9 @@
 import sys
-sys.path.append(r"D:\changelog\changelog-gen")
+import os
+from pathlib import Path
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+sys.path.append(str(BASE_DIR))
 
 from fastapi import FastAPI, Request, Form
 from fastapi.responses import HTMLResponse, RedirectResponse
@@ -7,16 +11,15 @@ from fastapi.templating import Jinja2Templates
 from datetime import datetime, timezone
 from dotenv import load_dotenv
 import uuid
-import os
 
-load_dotenv(dotenv_path=r"D:\changelog\changelog-gen\.env")
+load_dotenv(dotenv_path=BASE_DIR / ".env")
 
 from core.github_fetcher import fetch_commits
 from core.changelog_generator import generate_changelog
 from web.database import save_changelog, get_changelog
 
 app = FastAPI()
-templates = Jinja2Templates(directory=r"D:\changelog\changelog-gen\web\templates")
+templates = Jinja2Templates(directory=str(BASE_DIR / "web" / "templates"))
 
 @app.get("/", response_class=HTMLResponse)
 async def index(request: Request):

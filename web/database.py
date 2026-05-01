@@ -1,8 +1,10 @@
 import sqlite3
 import json
 from datetime import datetime
+from pathlib import Path
 
-DB_PATH = r"D:\changelog\changelog-gen\changelogs.db"
+BASE_DIR = Path(__file__).resolve().parent.parent
+DB_PATH = str(BASE_DIR / "changelogs.db")
 
 def init_db():
     conn = sqlite3.connect(DB_PATH)
