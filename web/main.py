@@ -17,12 +17,7 @@ from core.changelog_generator import generate_changelog
 from web.database import save_changelog, get_changelog
 
 app = FastAPI()
-@app.get("/debug")
-async def debug():
-    return {
-        "GROQ_API_KEY": os.environ.get("GROQ_API_KEY", "NOT FOUND"),
-        "GITHUB_TOKEN": os.environ.get("GITHUB_TOKEN", "NOT FOUND")
-    }
+
 templates = Jinja2Templates(directory=str(BASE_DIR / "web" / "templates"))
 
 @app.get("/", response_class=HTMLResponse)
