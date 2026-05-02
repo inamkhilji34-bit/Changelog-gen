@@ -4,65 +4,286 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>{{ repo_name }} — Changelog</title>
+<meta property="og:title" content="{{ repo_name }} Changelog">
+<meta property="og:description" content="{{ result.summary }}">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;0,9..144,900;1,9..144,300;1,9..144,700&display=swap" rel="stylesheet">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%230a0908'/%3E%3Cline x1='7' y1='10' x2='25' y2='10' stroke='%23c0392b' stroke-width='2.5' stroke-linecap='square'/%3E%3Cline x1='7' y1='16' x2='20' y2='16' stroke='%23c0392b' stroke-width='2.5' stroke-linecap='square'/%3E%3Cline x1='7' y1='22' x2='15' y2='22' stroke='%23c0392b' stroke-width='2.5' stroke-linecap='square'/%3E%3Crect x='21' y='19' width='5' height='5' fill='%23c0392b' opacity='0.6'/%3E%3C/svg%3E">
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-         max-width: 680px; margin: 0 auto; padding: 3rem 1.5rem; color: #1a1a1a; }
-  .header { border-bottom: 1px solid #e5e5e5; padding-bottom: 1.5rem; margin-bottom: 2rem; }
-  h1 { font-size: 1.6rem; font-weight: 700; margin-bottom: 0.4rem; }
-  .meta { color: #888; font-size: 0.85rem; }
-  .meta a { color: #6366f1; text-decoration: none; }
-  .summary { background: #f8f8ff; border-left: 3px solid #6366f1;
-             padding: 1rem 1.25rem; border-radius: 0 8px 8px 0;
-             margin-bottom: 2rem; color: #444; }
-  .category { margin-bottom: 2rem; }
-  .cat-title { font-size: 0.8rem; font-weight: 600; text-transform: uppercase;
-               letter-spacing: 0.06em; color: #888; margin-bottom: 0.75rem; }
-  ul { list-style: none; }
-  li { padding: 0.6rem 0; border-bottom: 1px solid #f0f0f0;
-       font-size: 0.95rem; line-height: 1.5; color: #333; }
-  li::before { content: "→ "; color: #6366f1; font-weight: 600; }
-  .footer { margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid #e5e5e5;
-            font-size: 0.8rem; color: #aaa; text-align: center; }
-  .footer a { color: #6366f1; text-decoration: none; }
-  .back { display: inline-block; margin-bottom: 2rem; color: #6366f1;
-          text-decoration: none; font-size: 0.9rem; }
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#0a0908;
+  --paper:#f0ece4;
+  --red:#c0392b;
+  --dim:#1a1815;
+  --dim2:#141210;
+  --border:rgba(255,255,255,0.07);
+  --border2:rgba(255,255,255,0.04);
+  --mid:#5a5550;
+  --green:#8ab37a;
+  --mono:'DM Mono',monospace;
+  --serif:'Fraunces','Georgia',serif;
+}
+html,body{min-height:100%;background:var(--ink);color:var(--paper);font-family:var(--mono)}
+
+/* ── BACKGROUND ── */
+.bg{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.bg-grid{position:absolute;inset:-80px;background-image:linear-gradient(rgba(192,57,43,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(192,57,43,0.04) 1px,transparent 1px);background-size:52px 52px;animation:gMove 20s linear infinite}
+@keyframes gMove{0%{transform:translate(0,0)}100%{transform:translate(52px,52px)}}
+.orb{position:absolute;border-radius:50%;filter:blur(120px);opacity:0.06}
+.orb1{width:500px;height:500px;background:var(--red);top:-150px;right:-100px;animation:oA 30s ease-in-out infinite}
+.orb2{width:400px;height:400px;background:var(--red);bottom:-100px;left:-100px;animation:oB 24s ease-in-out infinite}
+@keyframes oA{0%,100%{transform:translate(0,0)}50%{transform:translate(-40px,40px)}}
+@keyframes oB{0%,100%{transform:translate(0,0)}50%{transform:translate(40px,-40px)}}
+
+/* ── NAV ── */
+nav{
+  position:relative;z-index:10;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:16px 48px;
+  border-bottom:1px solid var(--border);
+  background:rgba(10,9,8,0.92);backdrop-filter:blur(20px);
+}
+.logo{font-family:var(--serif);font-size:17px;font-weight:800;letter-spacing:-0.025em;text-decoration:none;color:var(--paper)}
+.logo span{color:var(--red)}
+.nav-right{display:flex;align-items:center;gap:20px}
+.nav-link{font-size:10px;color:rgba(240,236,228,0.35);text-decoration:none;letter-spacing:0.12em;text-transform:uppercase;transition:color 0.2s}
+.nav-link:hover{color:var(--paper)}
+.nav-cta{background:var(--red);color:white;padding:7px 18px;font-size:10px;letter-spacing:0.08em;font-weight:600}
+
+/* ── MAIN ── */
+.page{position:relative;z-index:1;max-width:860px;margin:0 auto;padding:56px 48px 80px}
+@media(max-width:640px){.page{padding:40px 24px 60px}}
+
+/* ── BREADCRUMB ── */
+.breadcrumb{display:flex;align-items:center;gap:8px;margin-bottom:40px}
+.bc-back{font-size:10px;color:rgba(240,236,228,0.35);text-decoration:none;letter-spacing:0.12em;text-transform:uppercase;transition:color 0.2s;display:flex;align-items:center;gap:6px}
+.bc-back:hover{color:var(--paper)}
+.bc-back::before{content:'←'}
+.bc-sep{font-size:10px;color:var(--mid)}
+.bc-current{font-size:10px;color:var(--mid);letter-spacing:0.08em;text-transform:uppercase}
+
+/* ── HEADER ── */
+.cl-header{border-bottom:1px solid var(--border);padding-bottom:28px;margin-bottom:28px}
+.cl-eyebrow{font-size:10px;letter-spacing:0.25em;text-transform:uppercase;color:var(--red);margin-bottom:12px;display:flex;align-items:center;gap:10px}
+.cl-eyebrow::before{content:'';width:20px;height:1px;background:var(--red)}
+.cl-title{font-family:var(--serif);font-size:clamp(32px,4vw,56px);font-weight:900;letter-spacing:-0.03em;line-height:1;margin-bottom:14px}
+.cl-meta{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.cl-meta-item{font-size:10px;color:var(--mid);letter-spacing:0.08em;display:flex;align-items:center;gap:6px}
+.cl-meta-item::before{content:'·';color:var(--border)}
+.cl-meta-item:first-child::before{display:none}
+.cl-meta a{color:rgba(240,236,228,0.45);text-decoration:none;transition:color 0.2s}
+.cl-meta a:hover{color:var(--paper)}
+
+/* ── SHARE BAR ── */
+.share-bar{
+  display:flex;align-items:center;justify-content:space-between;
+  background:var(--dim2);border:1px solid var(--border);
+  padding:12px 16px;margin-bottom:28px;gap:12px;flex-wrap:wrap;
+}
+.share-url{font-size:11px;color:var(--green);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.share-actions{display:flex;gap:8px;flex-shrink:0}
+.share-btn{
+  font-size:10px;color:var(--mid);background:transparent;
+  border:1px solid var(--border);padding:5px 12px;
+  cursor:pointer;font-family:var(--mono);letter-spacing:0.08em;
+  text-transform:uppercase;transition:all 0.2s;text-decoration:none;
+  display:inline-block;
+}
+.share-btn:hover{border-color:rgba(192,57,43,0.4);color:var(--paper)}
+.share-btn.copied{border-color:var(--green);color:var(--green)}
+
+/* ── SUMMARY ── */
+.cl-summary{
+  border-left:2px solid var(--red);
+  padding:14px 18px;
+  background:rgba(192,57,43,0.05);
+  font-family:var(--serif);font-size:clamp(14px,1.6vw,17px);
+  font-style:italic;font-weight:300;
+  color:rgba(240,236,228,0.65);
+  line-height:1.65;margin-bottom:36px;
+}
+
+/* ── CATEGORY ── */
+.cl-category{margin-bottom:32px}
+.cat-header{
+  display:flex;align-items:center;gap:12px;
+  margin-bottom:14px;padding-bottom:10px;
+  border-bottom:1px solid var(--border);
+}
+.cat-label{font-size:9px;letter-spacing:0.25em;text-transform:uppercase;color:var(--green)}
+.cat-count{font-size:9px;color:var(--mid);background:var(--dim2);border:1px solid var(--border);padding:2px 8px}
+
+.cl-item{
+  display:flex;align-items:flex-start;gap:12px;
+  padding:12px 0;border-bottom:1px solid var(--border2);
+  transition:background 0.15s;
+}
+.cl-item:last-child{border-bottom:none}
+.cl-arrow{color:var(--red);flex-shrink:0;margin-top:1px;font-size:12px}
+.cl-text{font-size:12.5px;color:rgba(240,236,228,0.78);line-height:1.65}
+
+/* ── STATS FOOTER ── */
+.cl-stats{
+  display:flex;gap:0;border:1px solid var(--border);
+  margin-top:48px;
+}
+.cl-stat{flex:1;padding:20px;border-right:1px solid var(--border);text-align:center}
+.cl-stat:last-child{border-right:none}
+.cl-stat-n{font-family:var(--serif);font-size:32px;font-weight:900;color:var(--paper);line-height:1}
+.cl-stat-n span{color:var(--red)}
+.cl-stat-l{font-size:9px;letter-spacing:0.15em;text-transform:uppercase;color:var(--mid);margin-top:4px}
+
+/* ── CTA ── */
+.cl-cta{
+  margin-top:28px;
+  background:var(--dim2);border:1px solid var(--border);
+  padding:24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;
+}
+.cl-cta-text{font-size:11px;color:var(--mid);line-height:1.6}
+.cl-cta-text strong{color:rgba(240,236,228,0.6);display:block;margin-bottom:2px}
+.btn-red{
+  font-family:var(--mono);font-size:11px;font-weight:500;
+  background:var(--red);color:white;padding:10px 22px;
+  text-decoration:none;letter-spacing:0.05em;
+  white-space:nowrap;transition:opacity 0.2s;display:inline-block;
+}
+.btn-red:hover{opacity:0.88}
+
+/* ── FOOTER ── */
+footer{
+  position:relative;z-index:1;
+  padding:16px 48px;border-top:1px solid var(--border);
+  display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;
+}
+.f-left{font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:var(--mid)}
+.f-right{display:flex;gap:20px}
+.f-right a{font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--mid);text-decoration:none;transition:color 0.2s}
+.f-right a:hover{color:var(--paper)}
 </style>
 </head>
 <body>
-  <a href="/" class="back">← Generate another</a>
-  <div class="header">
-    <h1>{{ repo_name }}</h1>
-    <div class="meta">
-      Generated on {{ created_at[:10] }} &nbsp;·&nbsp;
-      <a href="{{ repo_url }}" target="_blank">View repository →</a>
+
+<div class="bg">
+  <div class="bg-grid"></div>
+  <div class="orb orb1"></div>
+  <div class="orb orb2"></div>
+</div>
+
+<nav>
+  <a href="/" class="logo">changelog<span>.</span>gen</a>
+  <div class="nav-right">
+    <a href="/app" class="nav-link">Generate</a>
+    <a href="https://github.com/inamkhilji34-bit/changelog-gen" target="_blank" class="nav-link">GitHub ↗</a>
+    <a href="/app" class="nav-link nav-cta">New changelog →</a>
+  </div>
+</nav>
+
+<div class="page">
+
+  <!-- Breadcrumb -->
+  <div class="breadcrumb">
+    <a href="/app" class="bc-back">Generate</a>
+    <span class="bc-sep">/</span>
+    <span class="bc-current">{{ repo_name }}</span>
+  </div>
+
+  <!-- Header -->
+  <div class="cl-header">
+    <div class="cl-eyebrow">Changelog</div>
+    <div class="cl-title">{{ repo_name }}</div>
+    <div class="cl-meta">
+      <div class="cl-meta-item">Generated {{ created_at[:10] }}</div>
+      <div class="cl-meta-item"><a href="{{ repo_url }}" target="_blank">View repository →</a></div>
+      <div class="cl-meta-item">{{ result.commit_count_included }} of {{ result.commit_count_processed }} commits included</div>
     </div>
   </div>
 
-  <div class="summary">{{ result.summary }}</div>
+  <!-- Share bar -->
+  <div class="share-bar">
+    <div class="share-url" id="shareUrl">{{ request.url }}</div>
+    <div class="share-actions">
+      <button class="share-btn" id="copyBtn" onclick="copyUrl()">Copy link</button>
+      <a href="{{ repo_url }}" target="_blank" class="share-btn">View repo ↗</a>
+    </div>
+  </div>
 
+  <!-- Summary -->
+  <div class="cl-summary">{{ result.summary }}</div>
+
+  <!-- Categories -->
   {% for category, items in result.categories.items() %}
     {% if items %}
-    <div class="category">
-      <div class="cat-title">{{ category }}</div>
-      <ul>
-        {% for item in items %}
-          <li>
-            {% if item is mapping %}
-              {{ item.title }} — {{ item.description }}
-            {% else %}
-              {{ item }}
+    <div class="cl-category">
+      <div class="cat-header">
+        <div class="cat-label">{{ category }}</div>
+        <div class="cat-count">{{ items|length }} change{% if items|length != 1 %}s{% endif %}</div>
+      </div>
+      {% for item in items %}
+      <div class="cl-item">
+        <div class="cl-arrow">→</div>
+        <div class="cl-text">
+          {% if item is mapping %}
+            {% if item.title is defined %}
+              <strong style="color:rgba(240,236,228,0.9);display:block;margin-bottom:2px">{{ item.title }}</strong>
             {% endif %}
-          </li>
-        {% endfor %}
-      </ul>
+            {% if item.description is defined %}{{ item.description }}{% endif %}
+          {% else %}
+            {{ item }}
+          {% endif %}
+        </div>
+      </div>
+      {% endfor %}
     </div>
     {% endif %}
   {% endfor %}
 
-  <div class="footer">
-    Generated by <a href="/">Changelog Generator</a> &nbsp;·&nbsp;
-    {{ result.commit_count_included }} of {{ result.commit_count_processed }} commits included
+  <!-- Stats -->
+  <div class="cl-stats">
+    <div class="cl-stat">
+      <div class="cl-stat-n">{{ result.commit_count_processed }}</div>
+      <div class="cl-stat-l">Commits analyzed</div>
+    </div>
+    <div class="cl-stat">
+      <div class="cl-stat-n">{{ result.commit_count_included }}</div>
+      <div class="cl-stat-l">Included</div>
+    </div>
+    <div class="cl-stat">
+      <div class="cl-stat-n">{{ result.commit_count_processed - result.commit_count_included }}</div>
+      <div class="cl-stat-l">Noise filtered</div>
+    </div>
   </div>
+
+  <!-- CTA -->
+  <div class="cl-cta">
+    <div class="cl-cta-text">
+      <strong>Generate another changelog</strong>
+      Works with any public GitHub repository. Free, no account required.
+    </div>
+    <a href="/app" class="btn-red">Generate new →</a>
+  </div>
+
+</div>
+
+<footer>
+  <div class="f-left">© 2026 changelog-gen · Open source</div>
+  <div class="f-right">
+    <a href="/">Home</a>
+    <a href="/app">Generate</a>
+    <a href="https://github.com/inamkhilji34-bit/changelog-gen" target="_blank">GitHub</a>
+  </div>
+</footer>
+
+<script>
+function copyUrl(){
+  const url = document.getElementById('shareUrl').textContent.trim();
+  navigator.clipboard.writeText(url).then(function(){
+    const btn = document.getElementById('copyBtn');
+    btn.textContent = 'Copied!';
+    btn.classList.add('copied');
+    setTimeout(function(){ btn.textContent = 'Copy link'; btn.classList.remove('copied'); }, 2000);
+  });
+}
+</script>
+
 </body>
 </html>
