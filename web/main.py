@@ -21,6 +21,10 @@ app = FastAPI()
 templates = Jinja2Templates(directory=str(BASE_DIR / "web" / "templates"))
 
 @app.get("/", response_class=HTMLResponse)
+async def landing(request: Request):
+    return templates.TemplateResponse(request=request, name="landing.html", context={})
+
+@app.get("/app", response_class=HTMLResponse)
 async def index(request: Request):
     return templates.TemplateResponse(request=request, name="index.html", context={"error": None})
 

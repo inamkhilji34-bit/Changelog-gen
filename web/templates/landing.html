@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Changelog Gen — AI-Powered Release Notes</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;0,9..144,900;1,9..144,300;1,9..144,700&display=swap" rel="stylesheet">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%230a0908'/%3E%3Cline x1='7' y1='10' x2='25' y2='10' stroke='%23c0392b' stroke-width='2.5' stroke-linecap='square'/%3E%3Cline x1='7' y1='16' x2='20' y2='16' stroke='%23c0392b' stroke-width='2.5' stroke-linecap='square'/%3E%3Cline x1='7' y1='22' x2='15' y2='22' stroke='%23c0392b' stroke-width='2.5' stroke-linecap='square'/%3E%3Crect x='21' y='19' width='5' height='5' fill='%23c0392b' opacity='0.6'/%3E%3C/svg%3E">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#0a0908;
+  --paper:#f0ece4;
+  --red:#c0392b;
+  --red2:#e74c3c;
+  --dim:#1a1815;
+  --dim2:#141210;
+  --border:rgba(255,255,255,0.07);
+  --border2:rgba(255,255,255,0.04);
+  --mid:#5a5550;
+  --mono:'DM Mono',monospace;
+  --serif:'Fraunces','Georgia',serif;
+}
+html{scroll-behavior:smooth}
+body{background:var(--ink);color:var(--paper);font-family:var(--mono);overflow-x:hidden}
+
+.bg{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.bg-grid{position:absolute;inset:-80px;background-image:linear-gradient(rgba(192,57,43,0.055) 1px,transparent 1px),linear-gradient(90deg,rgba(192,57,43,0.055) 1px,transparent 1px);background-size:52px 52px;animation:gMove 20s linear infinite}
+.bg-grid2{position:absolute;inset:-80px;background-image:linear-gradient(rgba(192,57,43,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(192,57,43,0.025) 1px,transparent 1px);background-size:130px 130px;animation:gMove 38s linear infinite reverse}
+@keyframes gMove{0%{transform:translate(0,0)}100%{transform:translate(52px,52px)}}
+.orb{position:absolute;border-radius:50%;filter:blur(110px);opacity:0.09}
+.orb1{width:700px;height:700px;background:var(--red);top:-250px;left:-200px;animation:oA 30s ease-in-out infinite}
+.orb2{width:500px;height:500px;background:var(--red);bottom:-150px;right:-150px;animation:oB 24s ease-in-out infinite}
+.orb3{width:350px;height:350px;background:#8b1a0e;top:45%;left:55%;animation:oC 38s ease-in-out infinite}
+@keyframes oA{0%,100%{transform:translate(0,0)}50%{transform:translate(80px,60px)}}
+@keyframes oB{0%,100%{transform:translate(0,0)}50%{transform:translate(-60px,-80px)}}
+@keyframes oC{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(-70px,50px) scale(1.25)}}
+.pts{position:absolute;inset:0}
+.p{position:absolute;width:1.5px;height:1.5px;border-radius:50%;background:rgba(192,57,43,0.45);animation:pUp linear infinite}
+@keyframes pUp{0%{bottom:-10px;opacity:0}10%{opacity:1}90%{opacity:0.4}100%{bottom:100%;opacity:0}}
+
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:14px 48px;border-bottom:1px solid var(--border);background:rgba(10,9,8,0.93);backdrop-filter:blur(22px)}
+.logo{font-family:var(--serif);font-size:17px;font-weight:800;letter-spacing:-0.025em}
+.logo span{color:var(--red)}
+.nav-links{display:flex;gap:30px;align-items:center}
+.nav-links a{font-size:10px;color:rgba(240,236,228,0.38);text-decoration:none;letter-spacing:0.12em;text-transform:uppercase;transition:color 0.2s}
+.nav-links a:hover{color:var(--paper)}
+.nav-cta{background:var(--red)!important;color:white!important;padding:8px 20px;font-size:10px!important;font-weight:600;letter-spacing:0.08em!important}
+
+.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:100px 48px 60px;position:relative;z-index:1}
+.hero-bg-word{position:absolute;right:-60px;top:50%;transform:translateY(-50%);font-family:var(--serif);font-size:clamp(160px,22vw,300px);font-weight:900;font-style:italic;color:rgba(192,57,43,0.04);white-space:nowrap;pointer-events:none;user-select:none;letter-spacing:-0.06em;animation:drift 28s ease-in-out infinite alternate}
+@keyframes drift{from{transform:translateY(-50%)}to{transform:translateY(-52%) translateX(-20px)}}
+.eyebrow{font-size:10px;letter-spacing:0.25em;text-transform:uppercase;color:var(--red);margin-bottom:14px;display:flex;align-items:center;gap:12px;animation:up 0.55s ease both}
+.eyebrow::before{content:'';width:28px;height:1px;background:var(--red)}
+h1{font-family:var(--serif);font-size:clamp(50px,7.8vw,108px);font-weight:900;line-height:0.93;letter-spacing:-0.04em;max-width:820px;animation:up 0.55s ease 0.1s both}
+h1 em{font-style:italic;color:rgba(240,236,228,0.2)}
+.hook{font-family:var(--serif);font-size:clamp(15px,1.7vw,20px);font-weight:300;font-style:italic;color:rgba(240,236,228,0.52);max-width:540px;line-height:1.65;margin-top:22px;padding-left:18px;border-left:2px solid var(--red);animation:up 0.55s ease 0.2s both}
+.hero-sub{font-size:11.5px;color:rgba(240,236,228,0.32);max-width:400px;line-height:1.9;margin-top:16px;animation:up 0.55s ease 0.25s both}
+.hero-actions{display:flex;gap:12px;align-items:center;margin-top:28px;animation:up 0.55s ease 0.3s both}
+.btn-red{font-family:var(--mono);font-size:11px;font-weight:500;background:var(--red);color:white;padding:12px 28px;text-decoration:none;letter-spacing:0.05em;transition:opacity 0.2s;position:relative;overflow:hidden;display:inline-block}
+.btn-red::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.12),transparent);transform:translateX(-100%);transition:transform 0.5s}
+.btn-red:hover::after{transform:translateX(100%)}
+.btn-ghost{font-size:11px;color:rgba(240,236,228,0.38);text-decoration:none;border:1px solid var(--border);padding:11px 22px;transition:all 0.2s;letter-spacing:0.05em}
+.btn-ghost:hover{border-color:rgba(240,236,228,0.25);color:var(--paper)}
+
+.hero-term{margin-top:40px;max-width:660px;background:var(--dim2);border:1px solid var(--border);box-shadow:0 40px 80px rgba(0,0,0,0.6);animation:up 0.55s ease 0.4s both}
+.tb{background:var(--dim);padding:10px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:7px}
+.dot{width:9px;height:9px;border-radius:50%}
+.dot.r{background:#c0392b}.dot.y{background:#e67e22}.dot.g{background:#27ae60}
+.tlabel{font-size:10px;color:var(--mid);margin-left:7px;letter-spacing:0.1em}
+.tbody{padding:18px 22px;font-size:11.5px;line-height:1.9}
+.tc{color:#333d28}.to{color:rgba(240,236,228,0.4)}
+.tk{color:var(--red);font-weight:500;display:block;margin-top:4px}
+.ti{color:rgba(240,236,228,0.78)}.ta{color:#8ab37a}
+.cur{display:inline-block;width:7px;height:13px;background:var(--paper);animation:blink 1s step-end infinite;vertical-align:middle}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+
+.scroll-hint{position:absolute;bottom:28px;left:48px;font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.18);display:flex;align-items:center;gap:10px}
+.sline{width:36px;height:1px;background:rgba(255,255,255,0.12);animation:sp 2s ease-in-out infinite}
+@keyframes sp{0%,100%{width:18px;opacity:0.3}50%{width:36px;opacity:1}}
+
+.mwrap{overflow:hidden;border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:11px 0;background:rgba(192,57,43,0.03);position:relative;z-index:1}
+.mtrack{display:flex;gap:44px;white-space:nowrap;animation:mscroll 22s linear infinite}
+.mi{font-size:10px;color:rgba(240,236,228,0.18);letter-spacing:0.15em;text-transform:uppercase}
+.ms{color:var(--red)}
+@keyframes mscroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+.rule{height:1px;background:var(--border);position:relative;z-index:1}
+.slabel{font-size:10px;letter-spacing:0.25em;text-transform:uppercase;color:var(--red);margin-bottom:8px;display:flex;align-items:center;gap:10px}
+.slabel::before{content:'';width:20px;height:1px;background:var(--red)}
+.stitle{font-family:var(--serif);font-size:clamp(28px,3.5vw,48px);font-weight:700;letter-spacing:-0.03em;margin-bottom:28px;line-height:1.05}
+
+.ba{padding:60px 48px;position:relative;z-index:1}
+.ba-grid{display:grid;grid-template-columns:1fr 48px 1fr;max-width:920px;align-items:center}
+@media(max-width:640px){.ba-grid{grid-template-columns:1fr}}
+.ba-card{background:var(--dim2);border:1px solid var(--border);padding:24px}
+.ba-cl{font-size:9px;letter-spacing:0.2em;text-transform:uppercase;color:var(--mid);margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--border2)}
+.ba-before .item{font-size:10.5px;color:rgba(240,236,228,0.2);line-height:1.9;padding:3px 0;border-bottom:1px solid var(--border2)}
+.ba-after .cat{font-size:9px;letter-spacing:0.15em;text-transform:uppercase;color:#8ab37a;margin:12px 0 6px}
+.ba-after .item{font-size:11px;color:rgba(240,236,228,0.72);padding:4px 0;border-bottom:1px solid var(--border2);line-height:1.7}
+.ba-after .item::before{content:"→ ";color:var(--red)}
+.ba-arr{display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:24px;color:var(--red);font-style:italic}
+@media(max-width:640px){.ba-arr{display:none}}
+
+.feat{padding:60px 48px;position:relative;z-index:1}
+.feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);max-width:1000px}
+@media(max-width:700px){.feat-grid{grid-template-columns:1fr}}
+.fc{background:var(--ink);padding:32px;transition:background 0.2s}
+.fc:hover{background:var(--dim2)}
+.fc.wide{grid-column:span 2}
+.fc-icon{width:42px;height:42px;border:1px solid rgba(192,57,43,0.4);display:flex;align-items:center;justify-content:center;font-size:17px;margin-bottom:18px}
+.fc-title{font-family:var(--serif);font-size:17px;font-weight:700;letter-spacing:-0.02em;margin-bottom:7px}
+.fc-desc{font-size:10.5px;color:var(--mid);line-height:1.85}
+.fc-tags{display:flex;gap:5px;margin-top:14px;flex-wrap:wrap}
+.fc-tag{font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:var(--mid);border:1px solid var(--border);padding:3px 7px}
+.spills{display:flex;gap:5px;flex-wrap:wrap;margin-top:16px}
+.spill{font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:var(--mid);border:1px solid var(--border);padding:3px 8px;background:var(--dim2)}
+
+.demo{padding:60px 48px;position:relative;z-index:1}
+.dtabs{display:flex;border:1px solid var(--border);max-width:960px;border-bottom:none}
+.dtab{flex:1;font-size:10px;letter-spacing:0.08em;text-transform:uppercase;padding:12px 8px;color:var(--mid);cursor:pointer;border-right:1px solid var(--border);background:var(--dim2);transition:all 0.2s;text-align:center}
+.dtab:last-child{border-right:none}
+.dtab.on{background:var(--ink);color:var(--paper);border-bottom:2px solid var(--red)}
+.dtab:hover:not(.on){color:var(--paper);background:var(--dim)}
+.dpanel{display:none;border:1px solid var(--border);max-width:960px;background:var(--dim2)}
+.dpanel.on{display:grid;grid-template-columns:230px 1fr}
+@media(max-width:640px){.dpanel.on{grid-template-columns:1fr}}
+.dlist{border-right:1px solid var(--border);background:var(--dim)}
+.ditem{padding:15px 17px;border-bottom:1px solid var(--border2);cursor:pointer;display:flex;align-items:flex-start;gap:10px;transition:background 0.2s}
+.ditem:hover{background:var(--dim2)}
+.ditem.on{background:rgba(192,57,43,0.06);border-left:2px solid var(--red)}
+.dnum{width:19px;height:19px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:9px;color:var(--mid);flex-shrink:0}
+.ditem.on .dnum{background:var(--red);border-color:var(--red);color:white}
+.dtxt{font-size:10px;color:var(--mid);line-height:1.5}
+.ditem.on .dtxt{color:var(--paper)}
+.dpreview{padding:24px}
+.dscreen{display:none}.dscreen.on{display:block}
+.mf{background:var(--dim);border:1px solid var(--border);padding:22px;max-width:380px}
+.mf h3{font-family:var(--serif);font-size:17px;font-weight:700;margin-bottom:4px}
+.mf p{font-size:10px;color:var(--mid);margin-bottom:18px}
+.mi2{width:100%;background:var(--ink);border:1px solid var(--border);padding:9px 12px;font-family:var(--mono);font-size:11px;color:rgba(240,236,228,0.55);margin-bottom:8px;outline:none}
+.mrow{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}
+.mbtn{width:100%;background:var(--red);color:white;border:none;padding:11px;font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:0.05em;cursor:pointer}
+.mp{text-align:center;padding:36px 0}
+.spin{width:38px;height:38px;border:2px solid rgba(192,57,43,0.2);border-top-color:var(--red);border-radius:50%;animation:sp2 0.8s linear infinite;margin:0 auto 16px}
+@keyframes sp2{to{transform:rotate(360deg)}}
+.mpline{font-size:11px;line-height:2}
+.mpdone{color:#8ab37a}.mpcur{color:rgba(240,236,228,0.55)}
+.mo{background:var(--dim);border:1px solid var(--border);padding:18px}
+.moh{border-bottom:1px solid var(--border2);padding-bottom:12px;margin-bottom:14px}
+.mot{font-family:var(--serif);font-size:19px;font-weight:700;margin-bottom:3px}
+.mom{font-size:9px;color:var(--mid)}
+.mosum{border-left:2px solid var(--red);padding:9px 12px;background:rgba(192,57,43,0.05);font-size:11px;color:rgba(240,236,228,0.48);margin-bottom:14px}
+.mocat{font-size:9px;letter-spacing:0.15em;text-transform:uppercase;color:#8ab37a;margin:10px 0 6px}
+.moitem{font-size:11px;color:rgba(240,236,228,0.72);padding:4px 0;border-bottom:1px solid var(--border2)}
+.moitem::before{content:"→ ";color:var(--red)}
+.msurl{background:var(--ink);border:1px solid var(--border);padding:11px 14px;font-size:11px;color:#8ab37a;display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.mscopy{font-size:9px;background:rgba(192,57,43,0.1);border:1px solid rgba(192,57,43,0.3);color:var(--red);padding:4px 10px;cursor:pointer;font-family:var(--mono);letter-spacing:0.08em}
+.msopts{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.msopt{background:var(--dim);border:1px solid var(--border);padding:13px 6px;text-align:center;font-size:9px;color:var(--mid);letter-spacing:0.08em;text-transform:uppercase}
+.msopt span{display:block;font-size:15px;margin-bottom:5px}
+
+.how{padding:60px 48px;position:relative;z-index:1}
+.pipeline{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);max-width:900px;position:relative}
+@media(max-width:640px){.pipeline{grid-template-columns:1fr}}
+.pcon{position:absolute;top:40px;left:17%;right:17%;height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent);z-index:0}
+.pstep{background:var(--ink);padding:32px;text-align:center;position:relative;z-index:1;transition:background 0.2s}
+.pstep:hover{background:var(--dim2)}
+.picon{width:78px;height:78px;border:1px solid rgba(192,57,43,0.35);display:flex;align-items:center;justify-content:center;margin:0 auto 18px;font-size:26px;background:var(--dim2)}
+.picon.a{border-color:var(--red)}
+.pnum{font-size:9px;letter-spacing:0.2em;text-transform:uppercase;color:var(--mid);border:1px solid var(--border);display:inline-block;padding:3px 10px;margin-bottom:12px}
+.ptitle{font-family:var(--serif);font-size:17px;font-weight:700;letter-spacing:-0.02em;margin-bottom:7px}
+.pdesc{font-size:10.5px;color:var(--mid);line-height:1.8;max-width:220px;margin:0 auto}
+
+.stats{display:flex;border-top:1px solid var(--border);border-bottom:1px solid var(--border);position:relative;z-index:1}
+.stat{flex:1;padding:32px 40px;border-right:1px solid var(--border);text-align:center}
+.stat:last-child{border-right:none}
+.stat-n{font-family:var(--serif);font-size:52px;font-weight:900;line-height:1}
+.stat-n span{color:var(--red)}
+.stat-l{font-size:9px;letter-spacing:0.15em;text-transform:uppercase;color:var(--mid);margin-top:6px}
+
+.cta{padding:60px 48px;position:relative;z-index:1;overflow:hidden}
+.cta::before{content:'';position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(192,57,43,0.09) 0%,transparent 70%);pointer-events:none;animation:breathe 4s ease-in-out infinite}
+@keyframes breathe{0%,100%{transform:translate(-50%,-50%) scale(1)}50%{transform:translate(-50%,-50%) scale(1.18)}}
+.cta-inner{border:1px solid var(--border);padding:64px 56px;text-align:center;position:relative}
+.cta-inner h2{font-family:var(--serif);font-size:clamp(32px,4.5vw,60px);font-weight:900;letter-spacing:-0.04em;margin-bottom:12px;line-height:1.05}
+.cta-inner h2 em{font-style:italic;color:rgba(240,236,228,0.22)}
+.ctasub{font-size:11px;color:var(--mid);margin-bottom:32px}
+.ctabtns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.ctaperks{display:flex;gap:20px;justify-content:center;margin-top:20px;flex-wrap:wrap}
+.ctaperk{font-size:10px;color:var(--mid);letter-spacing:0.1em;text-transform:uppercase}
+
+.contact{padding:60px 48px;position:relative;z-index:1}
+.cgrid{display:grid;grid-template-columns:1fr 1fr;gap:48px;max-width:860px;margin-top:28px}
+@media(max-width:640px){.cgrid{grid-template-columns:1fr}}
+.cb h3{font-family:var(--serif);font-size:17px;font-weight:700;letter-spacing:-0.02em;margin-bottom:8px}
+.cb p{font-size:11px;color:var(--mid);line-height:1.8;margin-bottom:18px}
+.socials{display:flex;gap:10px;flex-wrap:wrap}
+.soc-btn{width:42px;height:42px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;text-decoration:none;transition:all 0.2s;background:var(--dim2);color:var(--mid)}
+.soc-btn:hover{border-color:var(--red);color:var(--paper);background:rgba(192,57,43,0.1)}
+.soc-btn svg{width:18px;height:18px;fill:currentColor}
+.clink{display:flex;align-items:center;gap:10px;font-size:11px;color:rgba(240,236,228,0.38);text-decoration:none;padding:9px 0;border-bottom:1px solid var(--border2);transition:color 0.2s}
+.clink:hover{color:var(--paper)}
+.clink-icon{width:28px;height:28px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;background:var(--dim2)}
+
+footer{padding:22px 48px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:24px;position:relative;z-index:1}
+.flogo{font-family:var(--serif);font-size:15px;font-weight:800;letter-spacing:-0.025em;margin-bottom:4px}
+.flogo span{color:var(--red)}
+.fcopy{font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:var(--mid)}
+.fcols{display:flex;gap:44px}
+.fchead{font-size:9px;letter-spacing:0.2em;text-transform:uppercase;color:var(--red);margin-bottom:14px}
+.fcol a{display:block;font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--mid);text-decoration:none;margin-bottom:8px;transition:color 0.2s}
+.fcol a:hover{color:var(--paper)}
+
+@keyframes up{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+</style>
+</head>
+<body>
+
+<div class="bg">
+  <div class="bg-grid"></div>
+  <div class="bg-grid2"></div>
+  <div class="orb orb1"></div>
+  <div class="orb orb2"></div>
+  <div class="orb orb3"></div>
+  <div class="pts" id="pts"></div>
+</div>
+
+<nav>
+  <div class="logo">changelog<span>.</span>gen</div>
+  <div class="nav-links">
+    <a href="#demo">Demo</a>
+    <a href="#how">Pipeline</a>
+    <a href="#contact">Contact</a>
+    <a href="https://github.com/inamkhilji34-bit/changelog-gen" target="_blank">GitHub ↗</a>
+    <a href="/app" class="nav-cta">Try it free →</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="hero-bg-word">CHANGELOG</div>
+  <div class="eyebrow">AI-Powered Release Notes</div>
+  <h1>Your code ships.<br>Your users hear <em>nothing.</em></h1>
+  <p class="hook">Developers push features daily. Users never know. Not because nobody cares — because writing release notes is the most boring job in software. We automated it.</p>
+  <p class="hero-sub">Paste a GitHub URL. Pick a date range. Get a clean, shareable changelog in 10 seconds.</p>
+  <div class="hero-actions">
+    <a href="/app" class="btn-red">Generate a changelog →</a>
+    <a href="#demo" class="btn-ghost">See how it works ↓</a>
+  </div>
+  <div class="hero-term">
+    <div class="tb">
+      <div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
+      <span class="tlabel">changelog-gen · live output</span>
+    </div>
+    <div class="tbody">
+      <span class="tc"># github.com/tiangolo/fastapi · Oct 1–15 2024</span><br>
+      <span class="to">✅ Fetched 78 commits · filtered 43 noise commits</span>
+      <span class="tk">✦ New features</span>
+      <span class="ta">→ </span><span class="ti">Added SQL database tutorial with SQLModel integration</span><br>
+      <span class="ta">→ </span><span class="ti">New script to auto-generate documentation variants</span>
+      <span class="tk">✦ Bug fixes</span>
+      <span class="ta">→ </span><span class="ti">Fixed crash when generating OpenAPI docs with custom responses</span><br>
+      <span class="to">🔗 </span><span style="color:#8ab37a">changeloggen.com/c/a3f92bc</span><span class="cur"></span>
+    </div>
+  </div>
+  <div class="scroll-hint"><div class="sline"></div>Scroll to explore</div>
+</section>
+
+<div class="mwrap"><div class="mtrack" id="mq"></div></div>
+<div class="rule"></div>
+
+<section class="ba">
+  <div class="slabel">The problem</div>
+  <div class="stitle">What git log looks like<br>to your users</div>
+  <div class="ba-grid">
+    <div class="ba-card ba-before">
+      <div class="ba-cl">Before — raw commits · unreadable</div>
+      <div class="item">a3f92bc fix: null ptr exception in auth middleware</div>
+      <div class="item">d8e21aa feat: add redis caching layer</div>
+      <div class="item">c19f334 chore: bump deps to latest</div>
+      <div class="item">e82a1bc Merge pull request #234 from feat/x</div>
+      <div class="item">f91b2cd fix: Korean translation typo</div>
+      <div class="item">g73k1cd update stuff</div>
+      <div class="item">h92m3ef wip</div>
+    </div>
+    <div class="ba-arr">→</div>
+    <div class="ba-card ba-after">
+      <div class="ba-cl">After — human-readable · shareable</div>
+      <div class="cat">Improvements</div>
+      <div class="item">Dramatically improved page load speeds with intelligent caching</div>
+      <div class="cat">Bug fixes</div>
+      <div class="item">Fixed a crash when logging in with certain email formats</div>
+      <div class="item">Corrected Korean language display in documentation</div>
+    </div>
+  </div>
+</section>
+<div class="rule"></div>
+
+<section class="feat">
+  <div class="slabel">What it does</div>
+  <div class="feat-grid">
+    <div class="fc">
+      <div class="fc-icon">⚡</div>
+      <div class="fc-title">10-Second Generation</div>
+      <div class="fc-desc">Fetches commits, filters noise, rewrites in plain English. Done before your coffee brews.</div>
+    </div>
+    <div class="fc">
+      <div class="fc-icon">🔗</div>
+      <div class="fc-title">Permanent Share Links</div>
+      <div class="fc-desc">Every changelog gets a clean permanent URL. Paste it in GitHub releases, Notion, or email.</div>
+      <div class="fc-tags"><span class="fc-tag">GitHub</span><span class="fc-tag">Notion</span><span class="fc-tag">Slack</span></div>
+    </div>
+    <div class="fc wide">
+      <div class="fc-icon" style="border-color:rgba(192,57,43,0.7)">🤖</div>
+      <div class="fc-title">AI Noise Filtering</div>
+      <div class="fc-desc">Automatically drops merge commits, dependency bumps, typo fixes, and CI changes. Only real changes survive — rewritten so any human understands them.</div>
+      <div class="spills"><span class="spill">Llama 3.1</span><span class="spill">Groq API</span><span class="spill">FastAPI</span><span class="spill">GitHub API</span></div>
+    </div>
+    <div class="fc">
+      <div class="fc-icon">∞</div>
+      <div class="fc-title">Any Public Repo</div>
+      <div class="fc-desc">Works with any public GitHub repository. No install, no config, no OAuth dance.</div>
+    </div>
+    <div class="fc">
+      <div class="fc-icon">🆓</div>
+      <div class="fc-title">Free Forever</div>
+      <div class="fc-desc">No account. No credit card. No freemium gotcha. Just open source tooling that works.</div>
+    </div>
+  </div>
+</section>
+<div class="rule"></div>
+
+<section class="demo" id="demo">
+  <div class="slabel">Interactive demo</div>
+  <div class="stitle">See every step live</div>
+  <div class="dtabs">
+    <div class="dtab on" onclick="tab(0)">① Paste URL</div>
+    <div class="dtab" onclick="tab(1)">② AI Processes</div>
+    <div class="dtab" onclick="tab(2)">③ Read Output</div>
+    <div class="dtab" onclick="tab(3)">④ Share Link</div>
+  </div>
+  <div class="dpanel on" id="p0">
+    <div class="dlist">
+      <div class="ditem on"><div class="dnum">1</div><div class="dtxt">Paste any public GitHub repo URL</div></div>
+      <div class="ditem"><div class="dnum">2</div><div class="dtxt">Choose your date range</div></div>
+      <div class="ditem"><div class="dnum">3</div><div class="dtxt">Hit generate — ~10 seconds</div></div>
+    </div>
+    <div class="dpreview"><div class="dscreen on">
+      <div class="mf">
+        <h3>Changelog Generator</h3>
+        <p>Turn git commits into clean release notes.</p>
+        <input class="mi2" value="https://github.com/tiangolo/fastapi" readonly>
+        <div class="mrow">
+          <input class="mi2" value="2024-10-01" readonly style="margin:0">
+          <input class="mi2" value="2024-10-15" readonly style="margin:0">
+        </div>
+        <button class="mbtn">Generate changelog →</button>
+      </div>
+    </div></div>
+  </div>
+  <div class="dpanel" id="p1">
+    <div class="dlist">
+      <div class="ditem on"><div class="dnum">✓</div><div class="dtxt">Connected to GitHub API</div></div>
+      <div class="ditem on"><div class="dnum">✓</div><div class="dtxt">Fetched 78 commits</div></div>
+      <div class="ditem on"><div class="dnum">⟳</div><div class="dtxt">AI filtering and rewriting</div></div>
+    </div>
+    <div class="dpreview"><div class="dscreen on">
+      <div class="mp">
+        <div class="spin"></div>
+        <div class="mpline">
+          <div class="mpdone">✅ GitHub API connected</div>
+          <div class="mpdone">✅ Fetched 78 commits</div>
+          <div class="mpdone">✅ Filtered 43 noise commits</div>
+          <div class="mpcur">⟳ AI rewriting 35 meaningful commits...</div>
+          <div style="font-size:10px;color:var(--mid);margin-top:8px">est. 6 seconds remaining</div>
+        </div>
+      </div>
+    </div></div>
+  </div>
+  <div class="dpanel" id="p2">
+    <div class="dlist">
+      <div class="ditem on"><div class="dnum">✓</div><div class="dtxt">Grouped: Features, Fixes, Improvements</div></div>
+      <div class="ditem on"><div class="dnum">✓</div><div class="dtxt">Rewritten in plain English</div></div>
+      <div class="ditem on"><div class="dnum">✓</div><div class="dtxt">Permanent URL generated</div></div>
+    </div>
+    <div class="dpreview"><div class="dscreen on">
+      <div class="mo">
+        <div class="moh"><div class="mot">fastapi</div><div class="mom">Oct 15, 2024 · github.com/tiangolo/fastapi</div></div>
+        <div class="mosum">FastAPI improved SQL support, added documentation tooling, and resolved stability issues.</div>
+        <div class="mocat">New features</div>
+        <div class="moitem">Added SQL database tutorial with SQLModel integration</div>
+        <div class="mocat">Bug fixes</div>
+        <div class="moitem">Fixed crash when generating OpenAPI docs with custom responses</div>
+        <div class="moitem">Resolved Pydantic v2 conflict with Required field</div>
+      </div>
+    </div></div>
+  </div>
+  <div class="dpanel" id="p3">
+    <div class="dlist">
+      <div class="ditem on"><div class="dnum">→</div><div class="dtxt">Copy the permanent link</div></div>
+      <div class="ditem"><div class="dnum">2</div><div class="dtxt">Paste into GitHub release notes</div></div>
+      <div class="ditem"><div class="dnum">3</div><div class="dtxt">Email it or post in Slack</div></div>
+    </div>
+    <div class="dpreview"><div class="dscreen on">
+      <div style="font-size:10px;color:var(--mid);margin-bottom:10px">Your shareable changelog link:</div>
+      <div class="msurl"><span>changeloggen.com/c/a3f92bc</span><button class="mscopy">Copy</button></div>
+      <div style="font-size:10px;color:var(--mid);margin-bottom:10px">Share anywhere:</div>
+      <div class="msopts">
+        <div class="msopt"><span>📧</span>Email</div>
+        <div class="msopt"><span>📝</span>Notion</div>
+        <div class="msopt"><span>⌥</span>GitHub</div>
+      </div>
+    </div></div>
+  </div>
+</section>
+<div class="rule"></div>
+
+<section class="how" id="how">
+  <div class="slabel">Pipeline</div>
+  <div class="stitle">How it works</div>
+  <div class="pipeline">
+    <div class="pcon"></div>
+    <div class="pstep">
+      <div class="picon">⌥</div>
+      <div class="pnum">Step 01</div>
+      <div class="ptitle">Connect Repo</div>
+      <div class="pdesc">Paste any public GitHub URL and select a date range to analyze.</div>
+    </div>
+    <div class="pstep">
+      <div class="picon a">⚙</div>
+      <div class="pnum">Step 02</div>
+      <div class="ptitle">AI Analysis</div>
+      <div class="pdesc">Llama 3.1 parses commits, filters noise, and rewrites in plain human English.</div>
+    </div>
+    <div class="pstep">
+      <div class="picon">🔗</div>
+      <div class="pnum">Step 03</div>
+      <div class="ptitle">Publish Changelog</div>
+      <div class="pdesc">Get a permanent shareable URL. Post anywhere — GitHub, Notion, email, Slack.</div>
+    </div>
+  </div>
+</section>
+
+<div class="rule"></div>
+<div class="stats">
+  <div class="stat"><div class="stat-n">10<span>s</span></div><div class="stat-l">Avg generation time</div></div>
+  <div class="stat"><div class="stat-n">100<span>%</span></div><div class="stat-l">Free to use</div></div>
+  <div class="stat"><div class="stat-n">0</div><div class="stat-l">Manual writing needed</div></div>
+  <div class="stat"><div class="stat-n">∞</div><div class="stat-l">Repos supported</div></div>
+</div>
+
+<div class="rule"></div>
+<section class="cta">
+  <div class="cta-inner">
+    <h2>Stop writing release notes.<br><em>Start shipping.</em></h2>
+    <p class="ctasub">Free. No account required. Works on any public GitHub repo.</p>
+    <div class="ctabtns">
+      <a href="/app" class="btn-red">Generate your first changelog →</a>
+      <a href="https://github.com/inamkhilji34-bit/changelog-gen" target="_blank" class="btn-ghost">View source on GitHub ↗</a>
+    </div>
+    <div class="ctaperks">
+      <span class="ctaperk">Free forever</span>
+      <span class="ctaperk">·</span>
+      <span class="ctaperk">Open source</span>
+      <span class="ctaperk">·</span>
+      <span class="ctaperk">Any public repo</span>
+    </div>
+  </div>
+</section>
+
+<div class="rule"></div>
+<section class="contact" id="contact">
+  <div class="slabel">Get in touch</div>
+  <div class="cgrid">
+    <div class="cb">
+      <h3>Built by a student,<br>for developers</h3>
+      <p>Hi — I'm Inam, a CS student building real products while in school. Open to feedback, feature requests, and collaboration.</p>
+      <div class="socials">
+        <a href="mailto:inamkhilji34@gmail.com" class="soc-btn" title="Email">
+          <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+        </a>
+        <a href="https://github.com/inamkhilji34-bit" target="_blank" class="soc-btn" title="GitHub">
+          <svg viewBox="0 0 24 24"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.17 6.839 9.49.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.603-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.463-1.11-1.463-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0112 6.836c.85.004 1.705.114 2.504.336 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.202 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.167 22 16.418 22 12c0-5.523-4.477-10-10-10z"/></svg>
+        </a>
+        <a href="https://twitter.com/KhiljiInam" target="_blank" class="soc-btn" title="X / Twitter">
+          <svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+        </a>
+        <a href="https://www.linkedin.com/in/inam-khilji-8209672b4/" target="_blank" class="soc-btn" title="LinkedIn">
+          <svg viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+        </a>
+      </div>
+    </div>
+    <div class="cb">
+      <h3>About the project</h3>
+      <p>Changelog-gen is an open source tool built with Python, FastAPI, and Groq's Llama 3.1. Built as a real product — not a tutorial project — to solve a real developer pain.</p>
+      <p>Feedback, issues, and pull requests welcome on GitHub.</p>
+      <a href="https://github.com/inamkhilji34-bit/changelog-gen" target="_blank" class="clink">
+        <div class="clink-icon">⌥</div>View source on GitHub
+      </a>
+      <a href="/app" class="clink">
+        <div class="clink-icon">→</div>Open the live app
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div>
+    <div class="flogo">changelog<span>.</span>gen</div>
+    <div class="fcopy">© 2026 · Open source · Made with obsession</div>
+  </div>
+  <div class="fcols">
+    <div class="fcol">
+      <div class="fchead">Product</div>
+      <a href="/app">App</a>
+      <a href="#demo">Demo</a>
+    </div>
+    <div class="fcol">
+      <div class="fchead">Resources</div>
+      <a href="https://github.com/inamkhilji34-bit/changelog-gen">GitHub</a>
+      <a href="https://github.com/inamkhilji34-bit/changelog-gen#readme">Readme</a>
+    </div>
+    <div class="fcol">
+      <div class="fchead">Social</div>
+      <a href="https://twitter.com/KhiljiInam" target="_blank">Twitter / X</a>
+      <a href="https://www.linkedin.com/in/inam-khilji-8209672b4/" target="_blank">LinkedIn</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+const c=document.getElementById('pts');
+for(let i=0;i<22;i++){
+  const p=document.createElement('div');
+  p.className='p';
+  p.style.cssText='left:'+Math.random()*100+'%;animation-duration:'+(10+Math.random()*15)+'s;animation-delay:'+(Math.random()*14)+'s';
+  c.appendChild(p);
+}
+const words=['No more manual release notes','AI-Powered changelogs','Any public GitHub repo','Free forever','Built with FastAPI','10 seconds flat','Open source','Ship faster'];
+const mq=document.getElementById('mq');
+const h=words.map(w=>'<span class="mi">'+w+'</span><span class="mi"><span class="ms"> ✦ </span></span>').join('');
+mq.innerHTML=h+h;
+function tab(i){
+  document.querySelectorAll('.dtab').forEach(function(t,j){t.classList.toggle('on',i===j)});
+  document.querySelectorAll('.dpanel').forEach(function(p,j){p.classList.toggle('on',i===j)});
+}
+</script>
+</body>
+</html>
