@@ -157,8 +157,9 @@ h1 em{font-style:italic;color:rgba(240,236,228,0.2)}
 .msurl{background:var(--ink);border:1px solid var(--border);padding:11px 14px;font-size:11px;color:#8ab37a;display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
 .mscopy{font-size:9px;background:rgba(192,57,43,0.1);border:1px solid rgba(192,57,43,0.3);color:var(--red);padding:4px 10px;cursor:pointer;font-family:var(--mono);letter-spacing:0.08em}
 .msopts{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
-.msopt{background:var(--dim);border:1px solid var(--border);padding:13px 6px;text-align:center;font-size:9px;color:var(--mid);letter-spacing:0.08em;text-transform:uppercase}
+.msopt{background:var(--dim);border:1px solid var(--border);padding:13px 6px;text-align:center;font-size:9px;color:var(--mid);letter-spacing:0.08em;text-transform:uppercase;text-decoration:none;display:block;transition:all 0.2s}
 .msopt span{display:block;font-size:15px;margin-bottom:5px}
+a.msopt:hover{border-color:rgba(192,57,43,0.4);color:var(--paper);cursor:pointer}
 
 .how{padding:60px 48px;position:relative;z-index:1}
 .pipeline{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);max-width:900px;position:relative}
@@ -406,10 +407,10 @@ footer{padding:22px 48px;border-top:1px solid var(--border);display:flex;justify
       <div class="msurl"><span>changeloggen.com/c/a3f92bc</span><button class="mscopy">Copy</button></div>
       <div style="font-size:10px;color:var(--mid);margin-bottom:10px">Share anywhere:</div>
       <div class="msopts">
-        <div class="msopt"><span>📧</span>Email</div>
-        <div class="msopt"><span>📝</span>Notion</div>
-        <div class="msopt"><span>⌥</span>GitHub</div>
-      </div>
+  <a class="msopt" href="mailto:?subject=Changelog&body=Check out this changelog: https://web-production-17ca2.up.railway.app" target="_blank"><span>✉</span>Email</a>
+  <a class="msopt" href="https://notion.so" target="_blank" style="text-decoration:none"><span>📝</span>Notion</a>
+  <a class="msopt" href="https://github.com/inamkhilji34-bit/changelog-gen" target="_blank" style="text-decoration:none"><span>⌥</span>GitHub</a>
+</div>
     </div></div>
   </div>
 </section>
@@ -529,6 +530,7 @@ footer{padding:22px 48px;border-top:1px solid var(--border);display:flex;justify
 </footer>
 
 <script>
+// Particles
 const c=document.getElementById('pts');
 for(let i=0;i<22;i++){
   const p=document.createElement('div');
@@ -536,14 +538,39 @@ for(let i=0;i<22;i++){
   p.style.cssText='left:'+Math.random()*100+'%;animation-duration:'+(10+Math.random()*15)+'s;animation-delay:'+(Math.random()*14)+'s';
   c.appendChild(p);
 }
+
+// Marquee
 const words=['No more manual release notes','AI-Powered changelogs','Any public GitHub repo','Free forever','Built with FastAPI','10 seconds flat','Open source','Ship faster'];
 const mq=document.getElementById('mq');
 const h=words.map(w=>'<span class="mi">'+w+'</span><span class="mi"><span class="ms"> ✦ </span></span>').join('');
 mq.innerHTML=h+h;
+
+// Demo tabs
 function tab(i){
   document.querySelectorAll('.dtab').forEach(function(t,j){t.classList.toggle('on',i===j)});
   document.querySelectorAll('.dpanel').forEach(function(p,j){p.classList.toggle('on',i===j)});
 }
+
+// Make sidebar items clickable within each panel
+document.querySelectorAll('.ditem').forEach(function(item){
+  item.addEventListener('click', function(){
+    const siblings = this.parentElement.querySelectorAll('.ditem');
+    siblings.forEach(function(s){ s.classList.remove('on') });
+    this.classList.add('on');
+  });
+});
+
+// Auto-complete the spinner after 2 seconds on tab 2
+const observer = new MutationObserver(function(){
+  const panel1 = document.getElementById('p1');
+  if(panel1 && panel1.classList.contains('on')){
+    setTimeout(function(){
+      const cur = panel1.querySelector('.mpcur');
+      const spin = panel1.querySelector('.spin');
+      if(cur){ cur.style.color='#8ab37a'; cur.textContent='✅ Changelog generated successfully'; }
+      if(spin){ spin.style.display='none'; }
+    }, 2000);
+  }
+});
+observer.observe(document.body, {attributes:true, subtree:true, attributeFilter:['class']});
 </script>
-</body>
-</html>
