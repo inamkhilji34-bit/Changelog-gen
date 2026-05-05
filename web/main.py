@@ -1,3 +1,4 @@
+from web.database import save_changelog, get_changelog, get_stats
 import sys
 import os
 from pathlib import Path
@@ -67,3 +68,10 @@ async def view_changelog(request: Request, slug: str):
             "error": "Changelog not found."
         })
     return templates.TemplateResponse(request=request, name="changelog.html", context=data)
+
+@app.get("/admin", response_class=HTMLResponse)
+async def admin(request: Request, key: str = ""):
+    if key != os.environ.get("ADMIN_KEY", "changeme"):
+        return HTMLResponse("<h1 style='font-family:monospace;padding:40px'>Access denied.</h1>", status_code=403)
+    stats = get_stats()
+    return templates.TemplateResponse(request=request, name="admin.html", context={"stats": stats})
