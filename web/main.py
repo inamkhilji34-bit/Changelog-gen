@@ -75,3 +75,14 @@ async def admin(request: Request, key: str = ""):
         return HTMLResponse("<h1 style='font-family:monospace;padding:40px'>Access denied.</h1>", status_code=403)
     stats = get_stats()
     return templates.TemplateResponse(request=request, name="admin.html", context={"stats": stats})
+
+@app.get("/admin", response_class=HTMLResponse)
+async def admin(request: Request, key: str = ""):
+    stored_key = os.environ.get("ADMIN_KEY", "NOT_FOUND")
+    if key != stored_key:
+        return HTMLResponse(
+            f"<p style='font-family:monospace;padding:40px'>Access denied.<br>Stored: {stored_key}<br>You sent: {key}</p>",
+            status_code=403
+        )
+    stats = get_stats()
+    return templates.TemplateResponse(request=request, name="admin.html", context={"stats": stats})
