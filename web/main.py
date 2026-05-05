@@ -71,17 +71,12 @@ async def view_changelog(request: Request, slug: str):
 
 @app.get("/admin", response_class=HTMLResponse)
 async def admin(request: Request, key: str = ""):
-    if key != os.environ.get("ADMIN_KEY", "changeme"):
-        return HTMLResponse("<h1 style='font-family:monospace;padding:40px'>Access denied.</h1>", status_code=403)
-    stats = get_stats()
-    return templates.TemplateResponse(request=request, name="admin.html", context={"stats": stats})
-
-@app.get("/admin", response_class=HTMLResponse)
-async def admin(request: Request, key: str = ""):
-    stored_key = os.environ.get("ADMIN_KEY", "NOT_FOUND")
-    if key != stored_key:
+    import os
+    all_env = dict(os.environ)
+    admin_key = all_env.get("ADMIN_KEY", "NOT_FOUND")
+    if key != admin_key:
         return HTMLResponse(
-            f"<p style='font-family:monospace;padding:40px'>Access denied.<br>Stored: {stored_key}<br>You sent: {key}</p>",
+            f"<pre style='font-family:monospace;padding:40px;background:#111;color:#eee'>key_sent={key}\nadmin_key={admin_key}</pre>",
             status_code=403
         )
     stats = get_stats()
